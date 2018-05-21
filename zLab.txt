@@ -1,0 +1,40 @@
+/****************************************************************************
+ Version control of Box2D or other physics engine should be handled by independently.
+ Other integrated or attached libs are better to be separated from the cocos2d-x lib.
+ It's a very bad idea to combine all 3rd-party libs to its own lib.
+ ****************************************************************************/
+
+
+/// Turn off integrated physics
+{
+	in(.\cocos\base\ccConfig.h)
+	{
+		SET:
+		#define CC_USE_PHYSICS 0
+		#define CC_USE_3D_PHYSICS 0
+	}
+}
+
+/// Remove attached Box2D
+{
+	in(.\cocos\2d\cocos2dx.props)
+	{
+		DELETE:
+		libbox2d.lib;
+	}
+
+	in(.\cocos\2d\libcocos2d.vcxproj)
+	{
+		DELETE:
+		$(EngineRoot)external\Box2D\include
+		xcopy /Y /Q "$(ProjectDir)..\..\external\Box2D\prebuilt\win32\debug\*.*" "$(OutDir)"
+		xcopy /Y /Q "$(ProjectDir)..\..\external\Box2D\prebuilt\win32\release\*.*" "$(OutDir)"
+	}
+	//above can be done via VS Property Manager
+
+	in(.\external)
+	{
+		DELETE:
+		.\external\Box2D\
+	}
+}
